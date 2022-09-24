@@ -1,0 +1,36 @@
+version: "3.8"
+
+# 1. Generic builder for a RIC docker image: must have a docker image
+#    that can run a build and implements a ric.
+#     * Python: https://github.com/aws/aws-lambda-python-runtime-interface-client
+#     * NodeJS: https://github.com/aws/aws-lambda-nodejs-runtime-interface-client
+#     * Golang: https://github.com/aws/aws-lambda-go/ (https://www.serverless.com/blog/framework-example-golang-lambda-support/)
+#     * Java: https://docs.aws.amazon.com/lambda/latest/dg/java-handler (https://docs.aws.amazon.com/lambda/latest/dg/java-image.html)
+# 2. Generic builder for a RIE docker image
+
+x-aws-lambda-build-params: &aws-lambda-build-params
+  context: .
+  args:
+    BASE_IMAGE_BUILD: ${BASE_IMAGE_BUILD:-marcellodesales/python-builder:3.9-alpine}
+
+services:
+
+  # Base Runtime Container
+  # Base implementation of https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html for python code
+  aws-lambda-ric-runtime-python:
+    image: ${AWS_RIC_IMAGE:-marcellodesales/aws-lambda-ric:python-3.9}
+    build:
+      <<: [ *aws-lambda-build-params ]
+      target: custom-aws-lambda-ric-runtime-base-python
+      cache_from:
+        - ${AWS_RIC_IMAGE:-marcellodesales/aws-lambda-ric:python-3.9}
+
+  # Base Runtime Interface Emulator
+  # https://docs.aws.amazon.com/lambda/latest/dg/images-test.html#images-test-limitations
+  aws-lambda-rie-runtime-emulator-python:
+    image: ${AWS_RIE_IMAGE:-marcellodesales/aws-lambda-rie-emulator:python-3.9}
+    build:
+      <<: [ *aws-lambda-build-params ]
+      target: custom-aws-lambda-rie-runtime-base-python
+      cache_from:
+        - ${AWS_RIE_IMAGE:-marcellodesales/aws-lambda-rie-emulator:python-3.9}
