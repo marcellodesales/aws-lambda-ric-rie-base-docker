@@ -1,8 +1,8 @@
-# AWS Lambda RIC & RIE base docker images
+# ☁️ AWS Lambda RIC & RIE base docker images 🐳
 
 The images to run a Serverless in AWS and locally with an Emulator.
 
-# :lang: Languages
+# 🎌 Languages
 
 > **NOTE**: Different languages require different handlers.
 
@@ -15,6 +15,8 @@ The images to run a Serverless in AWS and locally with an Emulator.
 
 * Create a new `docker-compose.yaml`
   * It points to this repo at a given version `v0.1.0`
+* Choose a version of the language by choosing the path to the `dockerfile`
+  * Default values will be used from the Dockerfile image used.
 
 ```yaml
 version: "3.8"
